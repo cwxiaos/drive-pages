@@ -9,13 +9,13 @@
  * 
  */
 
+import { DatabaseSetup } from "./private/database"
+
 export async function onRequest(context) {
     try {
         const {request} = context
         const {pathname} = new URL(request.url)
         const path = pathname.split('/')[1]
-
-        console.log(path)
 
         // Avoid some files being accessed directly as static assets
         const blackList = [
@@ -43,13 +43,28 @@ export async function onRequest(context) {
         // Public static assets can be accessed directly
         const whiteList = [
             'static',
+            'favicon.ico',
+            'robots.txt',
         ]
+
         if(whiteList.includes(path)) {
             return await context.next()
         }
 
-        // Now we will validate authorization for protected routes
-        // TODO
+        // If database is not initialized, redirect to setup
+        const databaseSetup = new DatabaseSetup(context.env)
+        if (!await databaseSetup.isDatabaseInitialized()) {
+            if (path !== 'setup') {
+                const url = new URL(request.url)
+                url.pathname = '/setup'
+                return new Response(`Redirecting to: ${url.href}`, {
+                    status: 301,
+                    headers: {
+                        Location: url.href
+                    }
+                })
+            }
+        }
 
 
         return await context.next()

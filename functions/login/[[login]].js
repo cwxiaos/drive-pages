@@ -1,7 +1,7 @@
 /**
- * @file index.js
+ * @file [[login]].js
  * @author cwxiaos, 
- * @brief Root router
+ * @brief Page for login
  * @version 0.1
  * @date 2024-05-16
  * 
@@ -9,7 +9,9 @@
  * 
  */
 
-import {DatabaseAuth} from "./private/database"
+import {DatabaseAuth} from "../private/database"
+
+import page_login from '../../assets/login.html'
 
 export async function onRequest(context){
     return handleRequest(context)
@@ -23,7 +25,7 @@ async function handleRequest(context) {
         const databaseAuth = new DatabaseAuth(context.env)
         if (await databaseAuth.validateSession(cookie)) {
             const url = new URL(request.url)
-            url.pathname = '/'
+            url.pathname = '/drive'
             return new Response(`Redirecting to: ${url.href}`, {
                 status: 301,
                 headers: {
@@ -33,12 +35,10 @@ async function handleRequest(context) {
         }
     }
 
-    const url = new URL(request.url)
-    url.pathname = '/drive'
-    return new Response(`Redirecting to: ${url.href}`, {
-        status: 301,
+    return new Response(page_login, {
+        status: 200,
         headers: {
-            Location: url.href
+            'Content-Type': 'text/html',
         }
     })
 }

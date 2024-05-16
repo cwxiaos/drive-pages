@@ -1,7 +1,7 @@
 /**
- * @file index.js
+ * @file [[drive]].js
  * @author cwxiaos, 
- * @brief Root router
+ * @brief Page for drive ui main
  * @version 0.1
  * @date 2024-05-16
  * 
@@ -9,7 +9,7 @@
  * 
  */
 
-import {DatabaseAuth} from "./private/database"
+import {DatabaseAuth} from "../private/database"
 
 export async function onRequest(context){
     return handleRequest(context)
@@ -22,19 +22,12 @@ async function handleRequest(context) {
     if (cookie) {
         const databaseAuth = new DatabaseAuth(context.env)
         if (await databaseAuth.validateSession(cookie)) {
-            const url = new URL(request.url)
-            url.pathname = '/'
-            return new Response(`Redirecting to: ${url.href}`, {
-                status: 301,
-                headers: {
-                    Location: url.href
-                }
-            })
+            return new Response("Drive")
         }
     }
 
     const url = new URL(request.url)
-    url.pathname = '/drive'
+    url.pathname = '/login'
     return new Response(`Redirecting to: ${url.href}`, {
         status: 301,
         headers: {
