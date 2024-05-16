@@ -1,0 +1,5 @@
+export async function onRequest(context){
+    return new Response('Index', {
+        status: 200
+    })
+}
